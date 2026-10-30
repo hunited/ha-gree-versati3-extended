@@ -1,7 +1,5 @@
 # Gree Versati 3 Local Extended
-Based on https://github.com/sarunasr/ha-gree-versati3 and extended. Use as thoose:
-
-# Gree Versati 3 Local (Home Assistant)
+Based on https://github.com/sarunasr/ha-gree-versati3 and extended. Use it like they do:
 
 Custom Home Assistant integration for local LAN control of a Gree Versati 3 heat pump over the device UDP JSON protocol.
 

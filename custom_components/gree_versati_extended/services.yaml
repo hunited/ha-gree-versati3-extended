@@ -1,0 +1,46 @@
+set_param:
+  name: Set Parameter
+  description: Set one protocol parameter on one or more configured devices.
+  fields:
+    key:
+      name: Key
+      description: Protocol key to set.
+      required: true
+      example: HeWatOutTemSet
+      selector:
+        text:
+    value:
+      name: Value
+      description: Value to set (string, int, or bool).
+      required: true
+      example: 45
+      selector:
+        text:
+    device_id:
+      name: Device ID
+      description: Optional specific device_id. If omitted, applies to all configured entries.
+      required: false
+      example: 1234567890abcdef
+      selector:
+        text:
+
+get_params:
+  name: Get Parameters
+  description: Read one or more protocol parameters from one or more configured devices.
+  fields:
+    keys:
+      name: Keys
+      description: List of protocol keys to read.
+      required: true
+      example:
+        - HeWatOutTemSet
+        - Pow
+      selector:
+        object:
+    device_id:
+      name: Device ID
+      description: Optional specific device_id. If omitted, reads from all configured entries.
+      required: false
+      example: 1234567890abcdef
+      selector:
+        text:

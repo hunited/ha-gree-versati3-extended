@@ -1,0 +1,112 @@
+{
+  "title": "Gree Versati 3 Local Extended",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Csatlakozás a Gree Versati eszközhöz",
+        "description": "Adjuk meg a helyi csatlakozási beállításokat.",
+        "data": {
+          "host": "Hostnév",
+          "port": "Port",
+          "device_id": "Eszköz ID",
+          "key": "AES kulcs",
+          "timeout": "Időtúllépés (másodperc)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Hiba az eszközhöz csatlakozás közben",
+      "invalid_key": "Az AES kulcs pontosan 16 bájt lehet",
+      "unknown": "Ismeretlen hiba"
+    },
+    "abort": {
+      "already_configured": "Az eszköz már be lett állítva"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Gree Versati Extended beállítások",
+        "data": {
+          "scan_interval": "Lekérdezési időköz (másodperc)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "number": {
+      "he_wat_out_tem_set": {
+        "name": "Kívánt előremenő fűtővíz hőfok"
+      },
+      "co_wat_out_tem_set": {
+        "name": "Kívánt előremenő hűtővíz hőfok"
+      },
+      "wat_box_tem_set": {
+        "name": "Kívánt HMV (Használati meleg víz) hőmérséklet"
+      },
+      "he_hom_tem_set": {
+        "name": "A távoli helyiség kívánt hőfoka (fűtés)"
+      },
+      "co_hom_tem_set": {
+        "name": "A távoli helyiség kívánt hőfoka (hűtés)"
+      }
+    },
+    "switch": {
+      "power_control": {
+        "name": "Kapcsoló"
+      },
+      "quiet_mode": {
+        "name": "Csendes mód"
+      }
+    },
+    "select": {
+      "mode_control": {
+        "name": "Mód"
+      }
+    },
+    "sensor": {
+      "he_wat_out_tem_set": {
+        "name": "Kívánt előremenő fűtővíz hőfok"
+      },
+      "co_wat_out_tem_set": {
+        "name": "Kívánt előremenő hűtővíz hőfok"
+      },
+      "wat_box_tem_set": {
+        "name": "Kívánt HMV (Használati meleg víz) hőmérséklet"
+      },
+      "he_hom_tem_set": {
+        "name": "A távoli helyiség kívánt hőfoka (fűtés)"
+      },
+      "co_hom_tem_set": {
+        "name": "A távoli helyiség kívánt hőfoka (hűtés)"
+      },
+      "tem_un": {
+        "name": "Hőmérséklet mértékegysége"
+      },
+      "all_err": {
+        "name": "Hibakód"
+      },
+      "mod": {
+        "name": "Mód"
+      },
+      "pow": {
+        "name": "Kapcsoló"
+      },
+      "wat_box_tem": {
+        "name": "A víztartály hőmérséklete"
+      },
+      "all_out_wat_tem": {
+        "name": "A fűtőkör előremenő vízhőmérséklete"
+      },
+      "all_in_wat_tem": {
+        "name": "A fűtőkör visszatérő vízhőmérséklete"
+      },
+      "hep_out_wat_tem": {
+        "name": "Hőcserélő kimeneti hőmérséklete"
+      },
+      "rmo_hom_tem": {
+        "name": "Távoli helyiség aktuális hőmérséklete"
+      }
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "title": "Gree Versati 3 Local Extended",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Gree Versati device",
+        "description": "Enter local connection settings.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "device_id": "Device ID",
+          "key": "AES key",
+          "timeout": "Timeout (seconds)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to device",
+      "invalid_key": "AES key must be exactly 16 bytes",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Gree Versati Extended options",
+        "data": {
+          "scan_interval": "Polling interval (seconds)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "number": {
+      "he_wat_out_tem_set": {
+        "name": "Heating water outlet setpoint"
+      },
+      "co_wat_out_tem_set": {
+        "name": "Cooling water outlet setpoint"
+      },
+      "wat_box_tem_set": {
+        "name": "Water box temperature setpoint"
+      },
+      "he_hom_tem_set": {
+        "name": "Remote room heating temperature setpoint"
+      },
+      "co_hom_tem_set": {
+        "name": "Remote room cooling temperature setpoint"
+      }
+    },
+    "switch": {
+      "power_control": {
+        "name": "Power"
+      },
+      "quiet_mode": {
+        "name": "Quiet mode"
+      }
+    },
+    "select": {
+      "mode_control": {
+        "name": "Mode"
+      }
+    },
+    "sensor": {
+      "he_wat_out_tem_set": {
+        "name": "Heating water outlet setpoint"
+      },
+      "co_wat_out_tem_set": {
+        "name": "Cooling water outlet setpoint"
+      },
+      "wat_box_tem_set": {
+        "name": "Water box temperature setpoint"
+      },
+      "he_hom_tem_set": {
+        "name": "Remote room heating temperature setpoint"
+      },
+      "co_hom_tem_set": {
+        "name": "Remote room cooling temperature setpoint"
+      },
+      "tem_un": {
+        "name": "Temperature unit"
+      },
+      "all_err": {
+        "name": "Error code"
+      },
+      "mod": {
+        "name": "Mode"
+      },
+      "pow": {
+        "name": "Power"
+      },
+      "wat_box_tem": {
+        "name": "Water box temperature"
+      },
+      "all_out_wat_tem": {
+        "name": "Heating circuit supply temperature"
+      },
+      "all_in_wat_tem": {
+        "name": "Heating circuit return temperature"
+      },
+      "hep_out_wat_tem": {
+        "name": "Heat exchanger outlet temperature"
+      },
+      "rmo_hom_tem": {
+        "name": "Remote Indoor temperature"
+      }
+    }
+  }
+}
