@@ -1,5 +1,4 @@
-# ha-gree-versati3-extended
-Gree Versati 3 Local Extended
+# Gree Versati 3 Local Extended
 Based on https://github.com/sarunasr/ha-gree-versati3 and extended. Use as thoose:
 
 # Gree Versati 3 Local (Home Assistant)
