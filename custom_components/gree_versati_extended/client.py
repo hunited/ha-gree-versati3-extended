@@ -72,11 +72,20 @@ class GreeVersatiProtocolClient:
             return {}
 
         _LOGGER.debug(
-            "Requesting keys from device_id=%s host=%s: %s",
+            "Requesting %s parameters sequentially, one per UDP request, from device_id=%s host=%s",
+            len(keys),
             self._device_id,
             self._host,
-            keys,
         )
+
+        values: dict[str, Any] = {}
+        for key in dict.fromkeys(keys):
+            values.update(await self._async_get_single(key))
+        return values
+
+    async def _async_get_single(self, key: str) -> dict[str, Any]:
+        """Fetch one parameter, avoiding firmware limits on multi-key requests."""
+        keys = [key]
 
         # Request format mirrors known working client behavior for Versati:
         # prefer `cols` + `mac`, then fallback to `opt` variants for compatibility.
@@ -110,7 +119,8 @@ class GreeVersatiProtocolClient:
                     values = self._extract_values(response)
                     if values:
                         _LOGGER.debug(
-                            "Received values using encryption=%s from device_id=%s",
+                            "Received parameter %s using encryption=%s from device_id=%s",
+                            key,
                             encryption,
                             self._device_id,
                         )

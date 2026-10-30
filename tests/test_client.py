@@ -151,6 +151,34 @@ def test_async_get_filters_requested_values_and_remembers_request(
     ]
 
 
+def test_async_get_requests_parameters_sequentially(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = make_client()
+    requests: list[list[str]] = []
+
+    monkeypatch.setattr(
+        client,
+        "_build_outer_message",
+        lambda payload, encryption: json.dumps(payload),
+    )
+
+    async def request(
+        message: str,
+        encryption: str,
+        retries: int | None = None,
+    ) -> dict[str, object]:
+        payload = json.loads(message)
+        keys = payload["cols"]
+        requests.append(keys)
+        return {"cols": keys, "dat": [1 if key == "Pow" else 4 for key in keys]}
+
+    monkeypatch.setattr(client, "_async_request", request)
+
+    assert asyncio.run(client.async_get(["Pow", "Mod"])) == {"Pow": 1, "Mod": 4}
+    assert requests == [["Pow"], ["Mod"]]
+
+
 def test_async_get_falls_back_to_compatible_payload(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
