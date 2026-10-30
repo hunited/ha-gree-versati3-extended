@@ -61,36 +61,22 @@
     },
     "select": {
       "mode_control": {
-        "name": "Mode"
+        "name": "Mode",
+        "state": {
+          "heat": "Heat",
+          "cool": "Cool",
+          "hot_water": "Hot water",
+          "cool_hot_water": "Cool + hot water",
+          "heat_hot_water": "Heat + hot water"
+        }
       }
     },
     "sensor": {
-      "he_wat_out_tem_set": {
-        "name": "Heating water outlet setpoint"
-      },
-      "co_wat_out_tem_set": {
-        "name": "Cooling water outlet setpoint"
-      },
-      "wat_box_tem_set": {
-        "name": "Water box temperature setpoint"
-      },
-      "he_hom_tem_set": {
-        "name": "Remote room heating temperature setpoint"
-      },
-      "co_hom_tem_set": {
-        "name": "Remote room cooling temperature setpoint"
-      },
       "tem_un": {
         "name": "Temperature unit"
       },
       "all_err": {
         "name": "Error code"
-      },
-      "mod": {
-        "name": "Mode"
-      },
-      "pow": {
-        "name": "Power"
       },
       "wat_box_tem": {
         "name": "Water box temperature"
@@ -180,7 +166,7 @@
         "name": "Tank disinfection / anti-legionella function"
       },
       "versati_series": {
-        "name": "Versati series (7 = Versati III on owner's device)"
+        "name": "Versati series"
       },
       "external_room_temperature": {
         "name": "External room-temperature sensor"

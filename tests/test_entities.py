@@ -8,14 +8,26 @@ from pathlib import Path
 import pytest
 
 from custom_components.gree_versati_extended.constants import (
+    BOOLEAN_SENSOR_PARAMETERS,
+    DEFAULT_SCAN_INTERVAL,
     DIAGNOSTIC_SENSOR_PARAMETERS,
     EXTRA_SENSOR_PARAMETERS,
+    MODE_OPTIONS,
+    PARAM_CO_HOM_TEMP_SET,
+    PARAM_CO_WAT_OUT_TEM_SET,
+    PARAM_HE_HOM_TEMP_SET,
+    PARAM_HE_WAT_OUT_TEM_SET,
+    PARAM_MOD,
+    PARAM_POW,
+    PARAM_WAT_BOX_TEM_SET,
     POLL_KEYS,
 )
 from custom_components.gree_versati_extended.sensor import (
     EXTRA_SENSOR_DESCRIPTIONS,
     SENSOR_DESCRIPTIONS,
     _decode_temperature,
+    _format_boolean_state,
+    _format_temperature_unit,
 )
 from custom_components.gree_versati_extended.switch import _parse_switch_state
 
@@ -74,6 +86,55 @@ def test_decode_temperature_returns_none_for_invalid_values(
     assert _decode_temperature(hi, lo) is None
 
 
+@pytest.mark.parametrize(
+    ("value", "language", "expected"),
+    [
+        (0, "en", "Off"),
+        (1, "en", "On"),
+        (0, "hu", "Ki"),
+        (1, "hu-HU", "Be"),
+        (2, "en", None),
+        ("invalid", "hu", None),
+    ],
+)
+def test_format_boolean_sensor_state(
+    value: object,
+    language: str,
+    expected: str | None,
+) -> None:
+    assert _format_boolean_state(value, language) == expected
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [(0, "°C"), ("0", "°C"), (1, "°F"), ("1", "°F"), (2, None), (True, None)],
+)
+def test_format_temperature_unit(value: object, expected: str | None) -> None:
+    assert _format_temperature_unit(value) == expected
+
+
+def test_default_scan_interval_is_five_minutes() -> None:
+    assert DEFAULT_SCAN_INTERVAL == 300
+
+
+def test_control_values_are_not_exposed_as_duplicate_sensors() -> None:
+    sensor_parameters = {
+        description.param_key for description in SENSOR_DESCRIPTIONS
+    } | {description.param_key for description in EXTRA_SENSOR_DESCRIPTIONS}
+
+    assert not sensor_parameters.intersection(
+        {
+            PARAM_HE_WAT_OUT_TEM_SET,
+            PARAM_CO_WAT_OUT_TEM_SET,
+            PARAM_WAT_BOX_TEM_SET,
+            PARAM_HE_HOM_TEMP_SET,
+            PARAM_CO_HOM_TEMP_SET,
+            PARAM_MOD,
+            PARAM_POW,
+        }
+    )
+
+
 def test_extra_parameters_are_polled_and_have_english_and_hungarian_names() -> None:
     integration_dir = (
         Path(__file__).parents[1] / "custom_components" / "gree_versati_extended"
@@ -97,6 +158,15 @@ def test_extra_parameters_are_polled_and_have_english_and_hungarian_names() -> N
         for description in EXTRA_SENSOR_DESCRIPTIONS:
             assert description.translation_key in sensor_translations
             assert sensor_translations[description.translation_key]["name"]
+
+        mode_states = translations["entity"]["select"]["mode_control"]["state"]
+        assert set(mode_states) == set(MODE_OPTIONS)
+        assert all(mode_states.values())
+
+
+def test_binary_sensor_parameters_are_explicitly_defined() -> None:
+    extra_sensor_keys = {param_key for param_key, _ in EXTRA_SENSOR_PARAMETERS}
+    assert BOOLEAN_SENSOR_PARAMETERS <= extra_sensor_keys
 
 
 def test_diagnostic_entities_are_disabled_by_default() -> None:

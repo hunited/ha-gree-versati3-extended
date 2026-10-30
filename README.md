@@ -10,7 +10,7 @@ This integration is inspired by protocol behavior observed in [`tomikaa87/gree-r
 - Local UDP communication (no cloud dependency)
 - AES `pack` payload support for both ECB and GCM devices (auto-detected)
 - Config Flow + Config Entry setup
-- DataUpdateCoordinator polling (default 30s, configurable)
+- DataUpdateCoordinator polling (default 300s / 5 minutes, configurable)
 - Parameters are queried sequentially, one per UDP request, because some device
   firmware does not respond reliably to requests containing multiple parameters.
 - Five temperature setpoint number entities:
@@ -22,10 +22,11 @@ This integration is inspired by protocol behavior observed in [`tomikaa87/gree-r
 - Switch entities for power and quiet mode
 - Operation mode selector (`Heat`, `Cool`, `Hot water`, `Cool + hot water`, `Heat + hot water`)
 - Sensors (unavailable when the device omits the corresponding values):
-  - Setpoints: heating/cooling water outlet, hot water tank, room heating/cooling
-  - Device values: temperature unit, error code, operation mode, power
+  - Device values: temperature unit, error code
   - Temperatures: hot water tank, heating circuit supply and return, heat exchanger outlet, remote room
   - Additional raw protocol sensors for the extra parameters listed below
+- Setpoints are exposed only as controls, and power and operating mode are
+  exposed only as controls, avoiding duplicate sensor entities.
 - Services:
   - `gree_versati_extended.set_param`
   - `gree_versati_extended.get_params`

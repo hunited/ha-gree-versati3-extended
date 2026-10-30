@@ -18,20 +18,14 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .constants import (
+    BOOLEAN_SENSOR_PARAMETERS,
     CONF_DEVICE_ID,
     DATA_COORDINATOR,
     DATA_ENTRIES,
     DIAGNOSTIC_SENSOR_PARAMETERS,
     EXTRA_SENSOR_PARAMETERS,
     PARAM_ALL_ERR,
-    PARAM_CO_HOM_TEMP_SET,
-    PARAM_CO_WAT_OUT_TEM_SET,
-    PARAM_HE_HOM_TEMP_SET,
-    PARAM_HE_WAT_OUT_TEM_SET,
-    PARAM_MOD,
-    PARAM_POW,
     PARAM_TEM_UN,
-    PARAM_WAT_BOX_TEM_SET,
     TEMPERATURE_SENSORS,
 )
 from .coordinator import GreeVersatiCoordinator
@@ -81,31 +75,6 @@ TEMPERATURE_DESCRIPTIONS: tuple[GreeVersatiTempEntityDescription, ...] = tuple(
 
 SENSOR_DESCRIPTIONS: tuple[GreeVersatiSensorDescription, ...] = (
     GreeVersatiSensorDescription(
-        key="he_wat_out_tem_set",
-        translation_key="he_wat_out_tem_set",
-        param_key=PARAM_HE_WAT_OUT_TEM_SET,
-    ),
-    GreeVersatiSensorDescription(
-        key="co_hom_tem_set",
-        translation_key="co_hom_tem_set",
-        param_key=PARAM_CO_HOM_TEMP_SET,
-    ),
-    GreeVersatiSensorDescription(
-        key="he_hom_tem_set",
-        translation_key="he_hom_tem_set",
-        param_key=PARAM_HE_HOM_TEMP_SET,
-    ),
-    GreeVersatiSensorDescription(
-        key="co_wat_out_tem_set",
-        translation_key="co_wat_out_tem_set",
-        param_key=PARAM_CO_WAT_OUT_TEM_SET,
-    ),
-    GreeVersatiSensorDescription(
-        key="wat_box_tem_set",
-        translation_key="wat_box_tem_set",
-        param_key=PARAM_WAT_BOX_TEM_SET,
-    ),
-    GreeVersatiSensorDescription(
         key="tem_un",
         translation_key="tem_un",
         param_key=PARAM_TEM_UN,
@@ -116,16 +85,6 @@ SENSOR_DESCRIPTIONS: tuple[GreeVersatiSensorDescription, ...] = (
         param_key=PARAM_ALL_ERR,
         entity_registry_enabled_default=PARAM_ALL_ERR
         not in DIAGNOSTIC_SENSOR_PARAMETERS,
-    ),
-    GreeVersatiSensorDescription(
-        key="mod",
-        translation_key="mod",
-        param_key=PARAM_MOD,
-    ),
-    GreeVersatiSensorDescription(
-        key="pow",
-        translation_key="pow",
-        param_key=PARAM_POW,
     ),
 )
 
@@ -180,11 +139,58 @@ class GreeVersatiSensor(GreeVersatiEntity, SensorEntity):
 
     @property
     def native_value(self) -> str | int | float | bool | None:
-        """Return raw protocol value."""
-        value = (self.coordinator.data or {}).get(self.entity_description.param_key)
+        """Return a readable value for protocol flags and the temperature unit."""
+        key = self.entity_description.param_key
+        value = (self.coordinator.data or {}).get(key)
         if isinstance(value, str) and not value.strip():
             return None
+        if key == PARAM_TEM_UN:
+            unit = _format_temperature_unit(value)
+            if unit is not None:
+                return unit
+        if key in BOOLEAN_SENSOR_PARAMETERS:
+            state = _format_boolean_state(value, self.hass.config.language)
+            if state is not None:
+                return state
         return value
+
+
+def _format_temperature_unit(value: Any) -> str | None:
+    """Translate the device's temperature-unit code to a standard symbol."""
+    if isinstance(value, bool):
+        return None
+    if value in (0, "0"):
+        return "°C"
+    if value in (1, "1"):
+        return "°F"
+    return None
+
+
+def _format_boolean_state(value: Any, language: str) -> str | None:
+    """Translate a recognized binary value using Home Assistant's language."""
+    state = _parse_boolean_parameter(value)
+    if state is None:
+        return None
+    if language.lower().startswith("hu"):
+        return "Be" if state else "Ki"
+    return "On" if state else "Off"
+
+
+def _parse_boolean_parameter(value: Any) -> bool | None:
+    """Parse only the device's documented binary values."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        if value in (0, 1):
+            return bool(value)
+        return None
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in {"1", "true", "on"}:
+            return True
+        if normalized in {"0", "false", "off"}:
+            return False
+    return None
 
 
 class GreeVersatiCalculatedTemperatureSensor(GreeVersatiEntity, SensorEntity):

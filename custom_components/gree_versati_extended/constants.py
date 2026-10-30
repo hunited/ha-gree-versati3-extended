@@ -15,7 +15,7 @@ CONF_SCAN_INTERVAL: Final = "scan_interval"
 
 DEFAULT_PORT: Final = 7000
 DEFAULT_TIMEOUT: Final = 5
-DEFAULT_SCAN_INTERVAL: Final = 30
+DEFAULT_SCAN_INTERVAL: Final = 300
 DEFAULT_RETRIES: Final = 2
 
 MIN_HE_WAT_OUT_TEMP_SET: Final = 20
@@ -125,6 +125,42 @@ DIAGNOSTIC_SENSOR_PARAMETERS: Final[frozenset[str]] = frozenset(
     }
 )
 
+BOOLEAN_SENSOR_PARAMETERS: Final[frozenset[str]] = frozenset(
+    {
+        "Air",
+        "Blo",
+        "Health",
+        "SwhSlp",
+        "Lig",
+        "SwingLfRig",
+        "SwUpDn",
+        "Tur",
+        "StHt",
+        "TemRec",
+        "SvSt",
+        "Emegcy",
+        "ColHtWter",
+        "HetHtWter",
+        "TemRecB",
+        "FastHtWter",
+        "LefHom",
+        "SwDisFct",
+        "RomHomTemExt",
+        "WatBoxExt",
+        "FocModSwh",
+        "HanFroSwh",
+        "WatSyExhSwh",
+        "BordTest",
+        "ColColetSwh",
+        "EndTemCotSwh",
+        "WatBoxElcHeRunSta",
+        "SyAnFroRunSta",
+        "ElcHe1RunSta",
+        "ElcHe2RunSta",
+        "AnFrzzRunSta",
+    }
+)
+
 POLL_KEYS: Final[tuple[str, ...]] = (
     PARAM_HE_WAT_OUT_TEM_SET,
     PARAM_CO_WAT_OUT_TEM_SET,
@@ -154,11 +190,11 @@ DATA_CLIENT: Final = "client"
 DATA_COORDINATOR: Final = "coordinator"
 
 MODE_OPTIONS: Final[dict[str, int]] = {
-    "Heat": 1,
-    "Cool": 5,
-    "Hot water": 2,
-    "Cool + hot water": 3,
-    "Heat + hot water": 4,
+    "heat": 1,
+    "cool": 5,
+    "hot_water": 2,
+    "cool_hot_water": 3,
+    "heat_hot_water": 4,
 }
 
 PLATFORMS: Final[list[Platform]] = [

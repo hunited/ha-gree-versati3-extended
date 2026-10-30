@@ -61,36 +61,22 @@
     },
     "select": {
       "mode_control": {
-        "name": "Mód"
+        "name": "Mód",
+        "state": {
+          "heat": "Fűtés",
+          "cool": "Hűtés",
+          "hot_water": "HMV",
+          "cool_hot_water": "Hűtés + HMV",
+          "heat_hot_water": "Fűtés + HMV"
+        }
       }
     },
     "sensor": {
-      "he_wat_out_tem_set": {
-        "name": "Kívánt előremenő fűtővíz hőfok"
-      },
-      "co_wat_out_tem_set": {
-        "name": "Kívánt előremenő hűtővíz hőfok"
-      },
-      "wat_box_tem_set": {
-        "name": "Kívánt HMV (Használati meleg víz) hőmérséklet"
-      },
-      "he_hom_tem_set": {
-        "name": "A távoli helyiség kívánt hőfoka (fűtés)"
-      },
-      "co_hom_tem_set": {
-        "name": "A távoli helyiség kívánt hőfoka (hűtés)"
-      },
       "tem_un": {
         "name": "Hőmérséklet mértékegysége"
       },
       "all_err": {
         "name": "Hibakód"
-      },
-      "mod": {
-        "name": "Mód"
-      },
-      "pow": {
-        "name": "Kapcsoló"
       },
       "wat_box_tem": {
         "name": "A víztartály hőmérséklete"
@@ -180,7 +166,7 @@
         "name": "Tartályfertőtlenítés / legionella elleni funkció"
       },
       "versati_series": {
-        "name": "Versati sorozat (a tulajdonos eszközén 7 = Versati III)"
+        "name": "Versati sorozat"
       },
       "external_room_temperature": {
         "name": "Külső szobahőmérséklet-érzékelő"
