@@ -50,6 +50,8 @@ class GreeVersatiProtocolClient:
         self._retries = retries
         self._key_bytes = self._validate_key(key)
         self._preferred_encryption: str | None = None
+        self._preferred_get_payload: int | None = None
+        self._preferred_set_payload: int | None = None
 
     @staticmethod
     def validate_key_string(key: str) -> bool:
@@ -86,11 +88,25 @@ class GreeVersatiProtocolClient:
         )
 
         last_error: GreeVersatiClientError | None = None
+        payload_order = list(range(len(attempts)))
+        if self._preferred_get_payload is not None:
+            payload_order.remove(self._preferred_get_payload)
+            payload_order.insert(0, self._preferred_get_payload)
+
         for encryption in self._candidate_encryptions():
-            for payload in attempts:
+            for payload_index in payload_order:
+                payload = attempts[payload_index]
                 try:
                     request = self._build_outer_message(payload, encryption)
-                    response = await self._async_request(request, encryption)
+                    is_preferred = (
+                        encryption == self._preferred_encryption
+                        and payload_index == self._preferred_get_payload
+                    )
+                    response = await self._async_request(
+                        request,
+                        encryption,
+                        retries=self._retries if is_preferred else 0,
+                    )
                     values = self._extract_values(response)
                     if values:
                         _LOGGER.debug(
@@ -99,6 +115,7 @@ class GreeVersatiProtocolClient:
                             self._device_id,
                         )
                         self._preferred_encryption = encryption
+                        self._preferred_get_payload = payload_index
                         return {key: values[key] for key in keys if key in values}
                 except GreeVersatiClientError as err:
                     _LOGGER.debug(
@@ -149,17 +166,32 @@ class GreeVersatiProtocolClient:
             },
         )
         last_error: GreeVersatiClientError | None = None
+        payload_order = list(range(len(payloads)))
+        if self._preferred_set_payload is not None:
+            payload_order.remove(self._preferred_set_payload)
+            payload_order.insert(0, self._preferred_set_payload)
+
         for encryption in self._candidate_encryptions():
-            for payload in payloads:
+            for payload_index in payload_order:
+                payload = payloads[payload_index]
                 try:
                     request = self._build_outer_message(payload, encryption)
-                    response = await self._async_request(request, encryption)
+                    is_preferred = (
+                        encryption == self._preferred_encryption
+                        and payload_index == self._preferred_set_payload
+                    )
+                    response = await self._async_request(
+                        request,
+                        encryption,
+                        retries=self._retries if is_preferred else 0,
+                    )
                     status = response.get("r")
                     if isinstance(status, int) and status not in (0, 200):
                         raise GreeVersatiClientError(
                             f"Device returned error code: {status}"
                         )
                     self._preferred_encryption = encryption
+                    self._preferred_set_payload = payload_index
                     return
                 except GreeVersatiClientError as err:
                     _LOGGER.debug(
@@ -247,11 +279,17 @@ class GreeVersatiProtocolClient:
                 "Failed to decrypt and parse response pack"
             ) from err
 
-    async def _async_request(self, message: str, encryption: str) -> dict[str, Any]:
+    async def _async_request(
+        self,
+        message: str,
+        encryption: str,
+        retries: int | None = None,
+    ) -> dict[str, Any]:
         payload = message.encode("utf-8")
         last_error: Exception | None = None
+        attempt_count = (self._retries if retries is None else retries) + 1
 
-        for _attempt in range(self._retries + 1):
+        for _attempt in range(attempt_count):
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sock.setblocking(False)
             try:
@@ -266,7 +304,7 @@ class GreeVersatiProtocolClient:
                 _LOGGER.debug(
                     "UDP attempt %s/%s failed for host=%s port=%s encryption=%s: %r (%s)",
                     _attempt + 1,
-                    self._retries + 1,
+                    attempt_count,
                     self._host,
                     self._port,
                     encryption,
@@ -278,7 +316,7 @@ class GreeVersatiProtocolClient:
                 sock.close()
 
         raise GreeVersatiClientError(
-            f"No valid response from device after {self._retries + 1} attempts"
+            f"No valid response from device after {attempt_count} attempts"
         ) from last_error
 
     def _parse_response(self, response_bytes: bytes, encryption: str) -> dict[str, Any]:

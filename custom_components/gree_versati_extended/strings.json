@@ -106,6 +106,129 @@
       },
       "rmo_hom_tem": {
         "name": "Remote Indoor temperature"
+      },
+      "set_tem": {
+        "name": "Generic set temperature"
+      },
+      "fan_speed": {
+        "name": "Fan speed"
+      },
+      "fresh_air": {
+        "name": "Fresh-air function"
+      },
+      "x_fan": {
+        "name": "X-Fan / fan after-run"
+      },
+      "health_function": {
+        "name": "Health / ionizer function"
+      },
+      "sleep_mode": {
+        "name": "Sleep mode"
+      },
+      "display_light": {
+        "name": "Display light"
+      },
+      "horizontal_swing": {
+        "name": "Horizontal swing"
+      },
+      "vertical_swing": {
+        "name": "Vertical swing"
+      },
+      "turbo_mode": {
+        "name": "Turbo mode"
+      },
+      "frost_protection": {
+        "name": "Frost protection / 8 °C heating"
+      },
+      "heat_cool_type": {
+        "name": "Heat/cool type (raw code)"
+      },
+      "temperature_recovery": {
+        "name": "Temperature recovery flag"
+      },
+      "energy_saving": {
+        "name": "Energy-saving mode"
+      },
+      "device_time": {
+        "name": "Device-reported time"
+      },
+      "raw_water_return_temperature": {
+        "name": "Raw water return temperature register"
+      },
+      "raw_water_supply_temperature": {
+        "name": "Raw water supply temperature register"
+      },
+      "emergency_status": {
+        "name": "Emergency operation status (diagnostic)"
+      },
+      "cooling_hot_water_option": {
+        "name": "Cooling hot-water enable flag (device-specific)"
+      },
+      "heating_hot_water_option": {
+        "name": "Heating hot-water enable flag (device-specific)"
+      },
+      "temperature_recovery_secondary": {
+        "name": "Secondary temperature recovery flag (unconfirmed)"
+      },
+      "fast_hot_water": {
+        "name": "Rapid hot-water mode"
+      },
+      "leave_home_mode": {
+        "name": "Leave-home / holiday mode (unconfirmed)"
+      },
+      "display_function_switch": {
+        "name": "Tank disinfection / anti-legionella function"
+      },
+      "versati_series": {
+        "name": "Versati series (7 = Versati III on owner's device)"
+      },
+      "external_room_temperature": {
+        "name": "External room-temperature sensor"
+      },
+      "external_water_tank": {
+        "name": "Auxiliary water-tank electric heater option"
+      },
+      "forced_mode_switch": {
+        "name": "Forced-mode service flag (unverified)"
+      },
+      "manual_frost_switch": {
+        "name": "Manual frost-protection flag (unverified)"
+      },
+      "water_system_exhaust": {
+        "name": "Water-system exhaust/service flag (unverified)"
+      },
+      "board_test": {
+        "name": "Control-board test flag (service diagnostic)"
+      },
+      "collector_cooling_switch": {
+        "name": "Solar-collector switch (unverified)"
+      },
+      "end_temperature_control_switch": {
+        "name": "End-temperature control flag (unverified)"
+      },
+      "model_type": {
+        "name": "Model type (unconfirmed)"
+      },
+      "tank_electric_heater_status": {
+        "name": "Hot-water tank electric-heater status"
+      },
+      "system_antifreeze_status": {
+        "name": "System antifreeze status"
+      },
+      "electric_heater_1_status": {
+        "name": "Electric heater 1 status"
+      },
+      "electric_heater_2_status": {
+        "name": "Electric heater 2 status"
+      },
+      "antifreeze_status": {
+        "name": "Antifreeze operation status"
+      },
+      "source_error": {
+        "name": "Sensor error code (diagnostic)"
+      },
+      "communication_error": {
+        "name": "Communication error code (diagnostic)"
       }
     }
   }

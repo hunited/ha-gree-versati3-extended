@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
+from typing import Any
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -19,6 +21,8 @@ from .constants import (
     CONF_DEVICE_ID,
     DATA_COORDINATOR,
     DATA_ENTRIES,
+    DIAGNOSTIC_SENSOR_PARAMETERS,
+    EXTRA_SENSOR_PARAMETERS,
     PARAM_ALL_ERR,
     PARAM_CO_HOM_TEMP_SET,
     PARAM_CO_WAT_OUT_TEM_SET,
@@ -32,6 +36,19 @@ from .constants import (
 )
 from .coordinator import GreeVersatiCoordinator
 from .entity import GreeVersatiEntity
+
+
+def _decode_temperature(hi: Any, lo: Any) -> float | None:
+    """Decode a Hi/Lo temperature pair, returning None for invalid values."""
+    if hi is None or lo is None or isinstance(hi, bool) or isinstance(lo, bool):
+        return None
+    try:
+        temperature = float(hi) - 100.0 + float(lo) * 0.1
+    except (OverflowError, TypeError, ValueError):
+        return None
+    if not math.isfinite(temperature):
+        return None
+    return round(temperature, 1)
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -97,6 +114,8 @@ SENSOR_DESCRIPTIONS: tuple[GreeVersatiSensorDescription, ...] = (
         key="all_err",
         translation_key="all_err",
         param_key=PARAM_ALL_ERR,
+        entity_registry_enabled_default=PARAM_ALL_ERR
+        not in DIAGNOSTIC_SENSOR_PARAMETERS,
     ),
     GreeVersatiSensorDescription(
         key="mod",
@@ -108,6 +127,16 @@ SENSOR_DESCRIPTIONS: tuple[GreeVersatiSensorDescription, ...] = (
         translation_key="pow",
         param_key=PARAM_POW,
     ),
+)
+
+EXTRA_SENSOR_DESCRIPTIONS: tuple[GreeVersatiSensorDescription, ...] = tuple(
+    GreeVersatiSensorDescription(
+        key=translation_key,
+        translation_key=translation_key,
+        param_key=param_key,
+        entity_registry_enabled_default=param_key not in DIAGNOSTIC_SENSOR_PARAMETERS,
+    )
+    for param_key, translation_key in EXTRA_SENSOR_PARAMETERS
 )
 
 
@@ -125,7 +154,7 @@ async def async_setup_entry(
         [
             *(
                 GreeVersatiSensor(coordinator, device_id, description)
-                for description in SENSOR_DESCRIPTIONS
+                for description in (*SENSOR_DESCRIPTIONS, *EXTRA_SENSOR_DESCRIPTIONS)
             ),
             *(
                 GreeVersatiCalculatedTemperatureSensor(coordinator, device_id, description)
@@ -152,7 +181,10 @@ class GreeVersatiSensor(GreeVersatiEntity, SensorEntity):
     @property
     def native_value(self) -> str | int | float | bool | None:
         """Return raw protocol value."""
-        return (self.coordinator.data or {}).get(self.entity_description.param_key)
+        value = (self.coordinator.data or {}).get(self.entity_description.param_key)
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value
 
 
 class GreeVersatiCalculatedTemperatureSensor(GreeVersatiEntity, SensorEntity):
@@ -185,6 +217,4 @@ class GreeVersatiCalculatedTemperatureSensor(GreeVersatiEntity, SensorEntity):
         data = self.coordinator.data or {}
         hi = data.get(self.entity_description.hi_key)
         lo = data.get(self.entity_description.lo_key)
-        if hi is None or lo is None:
-            return None
-        return round((float(hi) - 100.0) + (float(lo) * 0.1), 1)
+        return _decode_temperature(hi, lo)

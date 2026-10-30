@@ -106,6 +106,129 @@
       },
       "rmo_hom_tem": {
         "name": "Távoli helyiség aktuális hőmérséklete"
+      },
+      "set_tem": {
+        "name": "Általános beállított hőmérséklet"
+      },
+      "fan_speed": {
+        "name": "Ventilátorsebesség"
+      },
+      "fresh_air": {
+        "name": "Frisslevegő-funkció"
+      },
+      "x_fan": {
+        "name": "X-Fan / ventilátor-utánfutás"
+      },
+      "health_function": {
+        "name": "Health / ionizátor funkció"
+      },
+      "sleep_mode": {
+        "name": "Alvó mód"
+      },
+      "display_light": {
+        "name": "Kijelző világítása"
+      },
+      "horizontal_swing": {
+        "name": "Vízszintes légterelés"
+      },
+      "vertical_swing": {
+        "name": "Függőleges légterelés"
+      },
+      "turbo_mode": {
+        "name": "Turbó mód"
+      },
+      "frost_protection": {
+        "name": "Fagyvédelem / 8 °C-os fűtés"
+      },
+      "heat_cool_type": {
+        "name": "Fűtés/hűtés típusa (nyers kód)"
+      },
+      "temperature_recovery": {
+        "name": "Hőmérséklet-helyreállítás jelző"
+      },
+      "energy_saving": {
+        "name": "Energiatakarékos mód"
+      },
+      "device_time": {
+        "name": "Eszköz által jelentett idő"
+      },
+      "raw_water_return_temperature": {
+        "name": "Nyers visszatérő vízhőmérséklet-regiszter"
+      },
+      "raw_water_supply_temperature": {
+        "name": "Nyers előremenő vízhőmérséklet-regiszter"
+      },
+      "emergency_status": {
+        "name": "Vészüzemi állapot (diagnosztika)"
+      },
+      "cooling_hot_water_option": {
+        "name": "Hűtési HMV-engedélyező jelző (eszközfüggő)"
+      },
+      "heating_hot_water_option": {
+        "name": "Fűtési HMV-engedélyező jelző (eszközfüggő)"
+      },
+      "temperature_recovery_secondary": {
+        "name": "Másodlagos hőmérséklet-helyreállítás jelző (nem megerősített)"
+      },
+      "fast_hot_water": {
+        "name": "Rapid / gyors HMV-készítés"
+      },
+      "leave_home_mode": {
+        "name": "Távolléti / vakáció mód (nem megerősített)"
+      },
+      "display_function_switch": {
+        "name": "Tartályfertőtlenítés / legionella elleni funkció"
+      },
+      "versati_series": {
+        "name": "Versati sorozat (a tulajdonos eszközén 7 = Versati III)"
+      },
+      "external_room_temperature": {
+        "name": "Külső szobahőmérséklet-érzékelő"
+      },
+      "external_water_tank": {
+        "name": "Kiegészítő HMV-tartály fűtőbetét opció"
+      },
+      "forced_mode_switch": {
+        "name": "Kényszerített mód szervizjelző (nem megerősített)"
+      },
+      "manual_frost_switch": {
+        "name": "Kézi fagyvédelmi jelző (nem megerősített)"
+      },
+      "water_system_exhaust": {
+        "name": "Vízrendszer-leürítő / szervizjelző (nem megerősített)"
+      },
+      "board_test": {
+        "name": "Vezérlőpanel-teszt jelző (szervizdiagnosztika)"
+      },
+      "collector_cooling_switch": {
+        "name": "Napkollektor-kapcsoló (nem megerősített)"
+      },
+      "end_temperature_control_switch": {
+        "name": "Vég-hőmérséklet szabályozó jelző (nem megerősített)"
+      },
+      "model_type": {
+        "name": "Modelltípus (nem megerősített)"
+      },
+      "tank_electric_heater_status": {
+        "name": "HMV-tartály elektromos fűtésének állapota"
+      },
+      "system_antifreeze_status": {
+        "name": "Rendszer fagyvédelmi állapota"
+      },
+      "electric_heater_1_status": {
+        "name": "1. elektromos fűtőbetét állapota"
+      },
+      "electric_heater_2_status": {
+        "name": "2. elektromos fűtőbetét állapota"
+      },
+      "antifreeze_status": {
+        "name": "Fagyvédelmi működés állapota"
+      },
+      "source_error": {
+        "name": "Érzékelőhiba-kód (diagnosztika)"
+      },
+      "communication_error": {
+        "name": "Kommunikációs hibakód (diagnosztika)"
       }
     }
   }

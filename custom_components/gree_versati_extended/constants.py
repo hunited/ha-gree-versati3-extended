@@ -41,8 +41,8 @@ CO_HOM_TEMP_SET_STEP: Final = 1
 PARAM_HE_WAT_OUT_TEM_SET: Final = "HeWatOutTemSet"
 PARAM_CO_WAT_OUT_TEM_SET: Final = "CoWatOutTemSet"
 PARAM_WAT_BOX_TEM_SET: Final = "WatBoxTemSet"
-PARAM_HE_HOM_TEM_SET: Final = "HeHomTemSet"
-PARAM_CO_HOM_TEM_SET: Final = "CoHomTemSet"
+PARAM_HE_HOM_TEMP_SET: Final = "HeHomTemSet"
+PARAM_CO_HOM_TEMP_SET: Final = "CoHomTemSet"
 PARAM_TEM_UN: Final = "TemUn"
 PARAM_ALL_ERR: Final = "AllErr"
 PARAM_MOD: Final = "Mod"
@@ -57,18 +57,87 @@ TEMPERATURE_SENSORS: Final[tuple[tuple[str, str, str], ...]] = (
     ("rmo_hom_tem", "RmoHomTemHi", "RmoHomTemLo"),
 )
 
+EXTRA_SENSOR_PARAMETERS: Final[tuple[tuple[str, str], ...]] = (
+    ("SetTem", "set_tem"),
+    ("WdSpd", "fan_speed"),
+    ("Air", "fresh_air"),
+    ("Blo", "x_fan"),
+    ("Health", "health_function"),
+    ("SwhSlp", "sleep_mode"),
+    ("Lig", "display_light"),
+    ("SwingLfRig", "horizontal_swing"),
+    ("SwUpDn", "vertical_swing"),
+    ("Tur", "turbo_mode"),
+    ("StHt", "frost_protection"),
+    ("HeatCoolType", "heat_cool_type"),
+    ("TemRec", "temperature_recovery"),
+    ("SvSt", "energy_saving"),
+    ("time", "device_time"),
+    ("AllInWatTem", "raw_water_return_temperature"),
+    ("AllOutWatTem", "raw_water_supply_temperature"),
+    ("Emegcy", "emergency_status"),
+    ("ColHtWter", "cooling_hot_water_option"),
+    ("HetHtWter", "heating_hot_water_option"),
+    ("TemRecB", "temperature_recovery_secondary"),
+    ("FastHtWter", "fast_hot_water"),
+    ("LefHom", "leave_home_mode"),
+    ("SwDisFct", "display_function_switch"),
+    ("VersatiSeries", "versati_series"),
+    ("RomHomTemExt", "external_room_temperature"),
+    ("WatBoxExt", "external_water_tank"),
+    ("FocModSwh", "forced_mode_switch"),
+    ("HanFroSwh", "manual_frost_switch"),
+    ("WatSyExhSwh", "water_system_exhaust"),
+    ("BordTest", "board_test"),
+    ("ColColetSwh", "collector_cooling_switch"),
+    ("EndTemCotSwh", "end_temperature_control_switch"),
+    ("ModelType", "model_type"),
+    ("WatBoxElcHeRunSta", "tank_electric_heater_status"),
+    ("SyAnFroRunSta", "system_antifreeze_status"),
+    ("ElcHe1RunSta", "electric_heater_1_status"),
+    ("ElcHe2RunSta", "electric_heater_2_status"),
+    ("AnFrzzRunSta", "antifreeze_status"),
+    ("SorErr", "source_error"),
+    ("CommErr", "communication_error"),
+)
+
+DIAGNOSTIC_SENSOR_PARAMETERS: Final[frozenset[str]] = frozenset(
+    {
+        PARAM_ALL_ERR,
+        "Emegcy",
+        "FocModSwh",
+        "HanFroSwh",
+        "WatSyExhSwh",
+        "BordTest",
+        "ColColetSwh",
+        "EndTemCotSwh",
+        "WatBoxElcHeRunSta",
+        "SyAnFroRunSta",
+        "ElcHe1RunSta",
+        "ElcHe2RunSta",
+        "AnFrzzRunSta",
+        "SorErr",
+        "CommErr",
+        "HeatCoolType",
+        "ModelType",
+        "TemRecB",
+        "LefHom",
+    }
+)
+
 POLL_KEYS: Final[tuple[str, ...]] = (
     PARAM_HE_WAT_OUT_TEM_SET,
     PARAM_CO_WAT_OUT_TEM_SET,
     PARAM_WAT_BOX_TEM_SET,
-    PARAM_HE_HOM_TEM_SET,
-    PARAM_CO_HOM_TEM_SET,
+    PARAM_HE_HOM_TEMP_SET,
+    PARAM_CO_HOM_TEMP_SET,
     PARAM_TEM_UN,
     PARAM_ALL_ERR,
     PARAM_MOD,
     PARAM_POW,
     PARAM_QUIET,
     *(key for _, hi_key, lo_key in TEMPERATURE_SENSORS for key in (hi_key, lo_key)),
+    *(param_key for param_key, _ in EXTRA_SENSOR_PARAMETERS),
 )
 
 SERVICE_SET_PARAM: Final = "set_param"

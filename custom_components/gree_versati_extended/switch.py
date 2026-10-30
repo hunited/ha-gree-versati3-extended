@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -18,6 +20,23 @@ from .constants import (
 )
 from .coordinator import GreeVersatiCoordinator
 from .entity import GreeVersatiEntity
+
+
+def _parse_switch_state(value: Any) -> bool | None:
+    """Convert recognized protocol values to a boolean switch state."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        if value in (0, 1):
+            return bool(value)
+        return None
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in {"1", "true", "on"}:
+            return True
+        if normalized in {"0", "false", "off"}:
+            return False
+    return None
 
 
 async def async_setup_entry(
@@ -66,12 +85,7 @@ class GreeVersatiPowerSwitch(GreeVersatiEntity, SwitchEntity):
     def is_on(self) -> bool | None:
         """Return switch state."""
         value = (self.coordinator.data or {}).get(PARAM_POW)
-        if value is None:
-            return None
-        try:
-            return bool(int(value))
-        except (TypeError, ValueError):
-            return bool(value)
+        return _parse_switch_state(value)
 
     async def async_turn_on(self, **kwargs: object) -> None:
         """Turn on power."""
@@ -107,12 +121,7 @@ class GreeVersatiQuietSwitch(GreeVersatiEntity, SwitchEntity):
     def is_on(self) -> bool | None:
         """Return switch state."""
         value = (self.coordinator.data or {}).get(PARAM_QUIET)
-        if value is None:
-            return None
-        try:
-            return bool(int(value))
-        except (TypeError, ValueError):
-            return bool(value)
+        return _parse_switch_state(value)
 
     @property
     def icon(self) -> str:
