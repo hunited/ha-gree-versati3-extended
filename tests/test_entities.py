@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -31,7 +32,10 @@ from custom_components.gree_versati_extended.sensor import (
     _format_boolean_state,
     _format_temperature_unit,
 )
-from custom_components.gree_versati_extended.number import SETPOINT_DEFINITIONS
+from custom_components.gree_versati_extended.number import (
+    SETPOINT_DEFINITIONS,
+    GreeVersatiSetpointNumber,
+)
 from custom_components.gree_versati_extended.select import GreeVersatiModeSelect
 from custom_components.gree_versati_extended.switch import GreeVersatiPowerSwitch
 from custom_components.gree_versati_extended.switch import _parse_switch_state
@@ -161,6 +165,33 @@ def test_control_and_temperature_entities_have_domain_icons() -> None:
         "mdi:thermometer",
         "mdi:home-thermometer",
     }
+
+
+@pytest.mark.parametrize(
+    "definition",
+    SETPOINT_DEFINITIONS,
+    ids=lambda definition: definition["param"],
+)
+def test_setpoint_write_updates_state_without_immediate_refresh(
+    definition: dict[str, object],
+) -> None:
+    parameter = definition["param"]
+    coordinator = MagicMock()
+    coordinator.data = {parameter: 30}
+    client = MagicMock()
+    client.async_set = AsyncMock()
+    entity = GreeVersatiSetpointNumber(
+        coordinator,
+        "device",
+        client,
+        definition,
+    )
+
+    asyncio.run(entity.async_set_native_value(32))
+
+    client.async_set.assert_awaited_once_with({parameter: 32})
+    coordinator.async_set_updated_data.assert_called_once_with({parameter: 32})
+    coordinator.async_request_refresh.assert_not_called()
 
 
 def test_extra_parameters_are_polled_and_have_english_and_hungarian_names() -> None:

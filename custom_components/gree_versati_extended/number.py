@@ -136,5 +136,10 @@ class GreeVersatiSetpointNumber(GreeVersatiEntity, NumberEntity):
 
     async def async_set_native_value(self, value: float) -> None:
         """Set setpoint value."""
-        await self._client.async_set({self._param_key: int(round(value))})
-        await self.coordinator.async_request_refresh()
+        target_value = int(round(value))
+        await self._client.async_set({self._param_key: target_value})
+
+        # The heat pump can briefly report the old value after accepting a setpoint.
+        updated_data = dict(self.coordinator.data or {})
+        updated_data[self._param_key] = target_value
+        self.coordinator.async_set_updated_data(updated_data)

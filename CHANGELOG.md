@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.11 - 2026-10-31
+
+- Prevented all five temperature setpoint controls from briefly reverting to a
+  stale device value immediately after a successful update.
+
 ## 0.1.10 - 2026-10-31
 
 - Grouped the seven core status parameters into one request and Hi/Lo
