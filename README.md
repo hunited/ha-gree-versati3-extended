@@ -11,8 +11,10 @@ This integration is inspired by protocol behavior observed in [`tomikaa87/gree-r
 - AES `pack` payload support for both ECB and GCM devices (auto-detected)
 - Config Flow + Config Entry setup
 - DataUpdateCoordinator polling (default 300s / 5 minutes, configurable)
-- Parameters are queried sequentially, one per UDP request, because some device
-  firmware does not respond reliably to requests containing multiple parameters.
+- The seven core status parameters are requested together; Hi/Lo temperature
+  registers are requested in pairs, and supplemental parameters are queried
+  individually. Failed or incomplete grouped requests fall back to individual
+  requests because some device firmware limits multi-parameter responses.
 - Five temperature setpoint number entities:
   - Heating water outlet: 20..60 °C
   - Cooling water outlet: 5..25 °C

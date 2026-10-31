@@ -151,7 +151,7 @@ def test_async_get_filters_requested_values_and_remembers_request(
     ]
 
 
-def test_async_get_requests_parameters_sequentially(
+def test_async_get_batches_selected_core_parameters(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     client = make_client()
@@ -176,7 +176,105 @@ def test_async_get_requests_parameters_sequentially(
     monkeypatch.setattr(client, "_async_request", request)
 
     assert asyncio.run(client.async_get(["Pow", "Mod"])) == {"Pow": 1, "Mod": 4}
-    assert requests == [["Pow"], ["Mod"]]
+    assert requests == [["Pow", "Mod"]]
+
+
+def test_async_get_requests_core_and_hilo_groups_then_single_extras(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from custom_components.gree_versati_extended.constants import (
+        CORE_BATCH_KEYS,
+        POLL_KEYS,
+        TEMPERATURE_SENSORS,
+    )
+
+    client = make_client()
+    grouped_requests: list[list[str]] = []
+    single_requests: list[str] = []
+
+    async def get_parameters(
+        keys: list[str],
+        *,
+        batch: bool = False,
+    ) -> dict[str, object]:
+        assert batch
+        grouped_requests.append(keys)
+        return {key: key for key in keys}
+
+    async def get_single(key: str) -> dict[str, object]:
+        single_requests.append(key)
+        return {key: key}
+
+    monkeypatch.setattr(client, "_async_get_parameters", get_parameters)
+    monkeypatch.setattr(client, "_async_get_single", get_single)
+
+    result = asyncio.run(client.async_get(list(POLL_KEYS)))
+
+    expected_temperature_groups = [
+        [hi_key, lo_key] for _, hi_key, lo_key in TEMPERATURE_SENSORS
+    ]
+    grouped_keys = set(CORE_BATCH_KEYS) | {
+        key for pair in expected_temperature_groups for key in pair
+    }
+    expected_single_requests = [key for key in POLL_KEYS if key not in grouped_keys]
+
+    assert grouped_requests == [list(CORE_BATCH_KEYS), *expected_temperature_groups]
+    assert single_requests == expected_single_requests
+    assert set(result) == set(POLL_KEYS)
+
+
+def test_async_get_group_falls_back_to_single_keys_when_partial(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = make_client()
+    single_requests: list[str] = []
+
+    async def get_parameters(
+        keys: list[str],
+        *,
+        batch: bool = False,
+    ) -> dict[str, object]:
+        assert batch
+        return {keys[0]: 1}
+
+    async def get_single(key: str) -> dict[str, object]:
+        single_requests.append(key)
+        return {key: 2}
+
+    monkeypatch.setattr(client, "_async_get_parameters", get_parameters)
+    monkeypatch.setattr(client, "_async_get_single", get_single)
+
+    result = asyncio.run(client._async_get_group_with_fallback(["Pow", "Mod"]))
+
+    assert result == {"Pow": 1, "Mod": 2}
+    assert single_requests == ["Mod"]
+
+
+def test_async_get_group_falls_back_to_single_keys_when_request_fails(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = make_client()
+    single_requests: list[str] = []
+
+    async def get_parameters(
+        keys: list[str],
+        *,
+        batch: bool = False,
+    ) -> dict[str, object]:
+        assert batch
+        raise GreeVersatiClientError("group timed out")
+
+    async def get_single(key: str) -> dict[str, object]:
+        single_requests.append(key)
+        return {key: 1}
+
+    monkeypatch.setattr(client, "_async_get_parameters", get_parameters)
+    monkeypatch.setattr(client, "_async_get_single", get_single)
+
+    result = asyncio.run(client._async_get_group_with_fallback(["Pow", "Mod"]))
+
+    assert result == {"Pow": 1, "Mod": 1}
+    assert single_requests == ["Pow", "Mod"]
 
 
 def test_async_get_falls_back_to_compatible_payload(

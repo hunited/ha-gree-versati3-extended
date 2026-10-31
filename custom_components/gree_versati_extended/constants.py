@@ -57,6 +57,16 @@ TEMPERATURE_SENSORS: Final[tuple[tuple[str, str, str], ...]] = (
     ("rmo_hom_tem", "RmoHomTemHi", "RmoHomTemLo"),
 )
 
+CORE_BATCH_KEYS: Final[tuple[str, ...]] = (
+    PARAM_HE_WAT_OUT_TEM_SET,
+    PARAM_CO_WAT_OUT_TEM_SET,
+    PARAM_WAT_BOX_TEM_SET,
+    PARAM_TEM_UN,
+    PARAM_ALL_ERR,
+    PARAM_MOD,
+    PARAM_POW,
+)
+
 EXTRA_SENSOR_PARAMETERS: Final[tuple[tuple[str, str], ...]] = (
     ("SetTem", "set_tem"),
     ("WdSpd", "fan_speed"),

@@ -15,7 +15,7 @@ from Crypto.Util.Padding import pad, unpad
 
 from homeassistant.exceptions import HomeAssistantError
 
-from .constants import DEFAULT_MAX_DATAGRAM_BYTES
+from .constants import CORE_BATCH_KEYS, DEFAULT_MAX_DATAGRAM_BYTES, TEMPERATURE_SENSORS
 
 ENCRYPTION_ECB = "ECB"
 ENCRYPTION_GCM = "GCM"
@@ -72,21 +72,59 @@ class GreeVersatiProtocolClient:
             return {}
 
         _LOGGER.debug(
-            "Requesting %s parameters sequentially, one per UDP request, from device_id=%s host=%s",
+            "Requesting %s parameters using grouped core/temperature requests and sequential extras from device_id=%s host=%s",
             len(keys),
             self._device_id,
             self._host,
         )
 
         values: dict[str, Any] = {}
-        for key in dict.fromkeys(keys):
+        remaining = list(dict.fromkeys(keys))
+
+        core_keys = [key for key in remaining if key in CORE_BATCH_KEYS]
+        if len(core_keys) > 1:
+            values.update(await self._async_get_group_with_fallback(core_keys))
+            remaining = [key for key in remaining if key not in core_keys]
+
+        for _, hi_key, lo_key in TEMPERATURE_SENSORS:
+            pair = [key for key in (hi_key, lo_key) if key in remaining]
+            if len(pair) == 2:
+                values.update(await self._async_get_group_with_fallback(pair))
+                remaining = [key for key in remaining if key not in pair]
+
+        for key in remaining:
+            values.update(await self._async_get_single(key))
+        return values
+
+    async def _async_get_group_with_fallback(self, keys: list[str]) -> dict[str, Any]:
+        """Fetch a group together, falling back to individual requests if needed."""
+        try:
+            values = await self._async_get_parameters(keys, batch=True)
+        except GreeVersatiClientError as err:
+            _LOGGER.debug(
+                "Grouped request failed for %s keys on device_id=%s; retrying individually: %s",
+                len(keys),
+                self._device_id,
+                err,
+            )
+            values = {}
+
+        missing_keys = [key for key in keys if key not in values]
+        for key in missing_keys:
             values.update(await self._async_get_single(key))
         return values
 
     async def _async_get_single(self, key: str) -> dict[str, Any]:
-        """Fetch one parameter, avoiding firmware limits on multi-key requests."""
-        keys = [key]
+        """Fetch one parameter using all supported protocol fallbacks."""
+        return await self._async_get_parameters([key])
 
+    async def _async_get_parameters(
+        self,
+        keys: list[str],
+        *,
+        batch: bool = False,
+    ) -> dict[str, Any]:
+        """Fetch parameters using compatible request formats."""
         # Request format mirrors known working client behavior for Versati:
         # prefer `cols` + `mac`, then fallback to `opt` variants for compatibility.
         attempts: tuple[dict[str, Any], ...] = (
@@ -102,7 +140,15 @@ class GreeVersatiProtocolClient:
             payload_order.remove(self._preferred_get_payload)
             payload_order.insert(0, self._preferred_get_payload)
 
-        for encryption in self._candidate_encryptions():
+        encryptions = self._candidate_encryptions()
+        if batch and self._preferred_encryption is not None:
+            encryptions = (self._preferred_encryption,)
+        if batch and self._preferred_get_payload is not None:
+            payload_order = [self._preferred_get_payload]
+        elif batch:
+            payload_order = [payload_order[0]]
+
+        for encryption in encryptions:
             for payload_index in payload_order:
                 payload = attempts[payload_index]
                 try:
@@ -114,13 +160,13 @@ class GreeVersatiProtocolClient:
                     response = await self._async_request(
                         request,
                         encryption,
-                        retries=self._retries if is_preferred else 0,
+                        retries=self._retries if is_preferred and not batch else 0,
                     )
                     values = self._extract_values(response)
                     if values:
                         _LOGGER.debug(
-                            "Received parameter %s using encryption=%s from device_id=%s",
-                            key,
+                            "Received %s parameters using encryption=%s from device_id=%s",
+                            len([key for key in keys if key in values]),
                             encryption,
                             self._device_id,
                         )
@@ -140,7 +186,9 @@ class GreeVersatiProtocolClient:
         if last_error is not None:
             raise last_error
 
-        raise GreeVersatiClientError("Device response did not include requested values")
+        raise GreeVersatiClientError(
+            "Device response did not include requested values"
+        )
 
     async def async_set(self, params: dict[str, Any]) -> None:
         """Set one or more parameters on the device."""

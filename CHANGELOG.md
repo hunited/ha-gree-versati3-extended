@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.10 - 2026-10-31
+
+- Grouped the seven core status parameters into one request and Hi/Lo
+  temperature registers into pairs.
+- Added automatic individual-request fallback for failed or incomplete groups.
+- Added GitHub Actions checks for Home Assistant integration validation and
+  the Python test suite.
+
 ## 0.1.9 - 2026-10-31
 
 - Added heating and cooling icons to the corresponding temperature setpoints.
