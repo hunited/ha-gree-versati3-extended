@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -25,10 +26,14 @@ from custom_components.gree_versati_extended.constants import (
 from custom_components.gree_versati_extended.sensor import (
     EXTRA_SENSOR_DESCRIPTIONS,
     SENSOR_DESCRIPTIONS,
+    TEMPERATURE_DESCRIPTIONS,
     _decode_temperature,
     _format_boolean_state,
     _format_temperature_unit,
 )
+from custom_components.gree_versati_extended.number import SETPOINT_DEFINITIONS
+from custom_components.gree_versati_extended.select import GreeVersatiModeSelect
+from custom_components.gree_versati_extended.switch import GreeVersatiPowerSwitch
 from custom_components.gree_versati_extended.switch import _parse_switch_state
 
 
@@ -133,6 +138,29 @@ def test_control_values_are_not_exposed_as_duplicate_sensors() -> None:
             PARAM_POW,
         }
     )
+
+
+def test_control_and_temperature_entities_have_domain_icons() -> None:
+    icons_by_parameter = {
+        definition["param"]: definition["icon"]
+        for definition in SETPOINT_DEFINITIONS
+    }
+
+    assert icons_by_parameter[PARAM_HE_WAT_OUT_TEM_SET] == "mdi:sun-thermometer"
+    assert icons_by_parameter[PARAM_CO_WAT_OUT_TEM_SET] == "mdi:snowflake-thermometer"
+    assert icons_by_parameter[PARAM_HE_HOM_TEMP_SET] == "mdi:sun-thermometer"
+    assert icons_by_parameter[PARAM_CO_HOM_TEMP_SET] == "mdi:snowflake-thermometer"
+    power_switch = GreeVersatiPowerSwitch(MagicMock(), "device", MagicMock())
+    mode_select = GreeVersatiModeSelect(MagicMock(), "device", MagicMock())
+    assert power_switch.icon == "mdi:heat-pump"
+    assert mode_select.icon == "mdi:hvac"
+    assert {description.icon for description in TEMPERATURE_DESCRIPTIONS} == {
+        "mdi:water-thermometer",
+        "mdi:thermometer-chevron-up",
+        "mdi:thermometer-chevron-down",
+        "mdi:thermometer",
+        "mdi:home-thermometer",
+    }
 
 
 def test_extra_parameters_are_polled_and_have_english_and_hungarian_names() -> None:

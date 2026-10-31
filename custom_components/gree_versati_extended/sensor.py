@@ -66,6 +66,13 @@ TEMPERATURE_DESCRIPTIONS: tuple[GreeVersatiTempEntityDescription, ...] = tuple(
         translation_key=key,
         hi_key=hi_key,
         lo_key=lo_key,
+        icon={
+            "wat_box_tem": "mdi:water-thermometer",
+            "all_out_wat_tem": "mdi:thermometer-chevron-up",
+            "all_in_wat_tem": "mdi:thermometer-chevron-down",
+            "hep_out_wat_tem": "mdi:thermometer",
+            "rmo_hom_tem": "mdi:home-thermometer",
+        }[key],
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,

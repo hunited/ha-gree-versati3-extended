@@ -66,6 +66,7 @@ class GreeVersatiPowerSwitch(GreeVersatiEntity, SwitchEntity):
     """Power control switch."""
 
     _attr_translation_key = "power_control"
+    _attr_icon = "mdi:heat-pump"
 
     def __init__(
         self,

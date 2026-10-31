@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from homeassistant.components.number import NumberEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTemperature
@@ -42,6 +44,7 @@ SETPOINT_DEFINITIONS = [
     {
         "param": PARAM_HE_WAT_OUT_TEM_SET,
         "translation_key": "he_wat_out_tem_set",
+        "icon": "mdi:sun-thermometer",
         "min": MIN_HE_WAT_OUT_TEMP_SET,
         "max": MAX_HE_WAT_OUT_TEMP_SET,
         "step": HE_WAT_OUT_TEMP_SET_STEP,
@@ -49,6 +52,7 @@ SETPOINT_DEFINITIONS = [
     {
         "param": PARAM_CO_WAT_OUT_TEM_SET,
         "translation_key": "co_wat_out_tem_set",
+        "icon": "mdi:snowflake-thermometer",
         "min": MIN_CO_WAT_OUT_TEMP_SET,
         "max": MAX_CO_WAT_OUT_TEMP_SET,
         "step": CO_WAT_OUT_TEMP_SET_STEP,
@@ -56,6 +60,7 @@ SETPOINT_DEFINITIONS = [
     {
         "param": PARAM_WAT_BOX_TEM_SET,
         "translation_key": "wat_box_tem_set",
+        "icon": "mdi:water-thermometer",
         "min": MIN_WAT_BOX_TEMP_SET,
         "max": MAX_WAT_BOX_TEMP_SET,
         "step": WAT_BOX_TEMP_SET_STEP,
@@ -63,6 +68,7 @@ SETPOINT_DEFINITIONS = [
     {
         "param": PARAM_HE_HOM_TEMP_SET,
         "translation_key": "he_hom_tem_set",
+        "icon": "mdi:sun-thermometer",
         "min": MIN_HE_HOM_TEMP_SET,
         "max": MAX_HE_HOM_TEMP_SET,
         "step": HE_HOM_TEMP_SET_STEP,
@@ -70,6 +76,7 @@ SETPOINT_DEFINITIONS = [
     {
         "param": PARAM_CO_HOM_TEMP_SET,
         "translation_key": "co_hom_tem_set",
+        "icon": "mdi:snowflake-thermometer",
         "min": MIN_CO_HOM_TEMP_SET,
         "max": MAX_CO_HOM_TEMP_SET,
         "step": CO_HOM_TEMP_SET_STEP,
@@ -111,6 +118,7 @@ class GreeVersatiSetpointNumber(GreeVersatiEntity, NumberEntity):
         super().__init__(coordinator, device_id, param_key)
         self._client = client
         self._attr_translation_key = definition["translation_key"]
+        self._attr_icon = definition["icon"]
         self._attr_native_min_value = definition["min"]
         self._attr_native_max_value = definition["max"]
         self._attr_native_step = definition["step"]

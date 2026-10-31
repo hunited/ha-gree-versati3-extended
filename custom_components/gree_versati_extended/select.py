@@ -47,6 +47,7 @@ class GreeVersatiModeSelect(GreeVersatiEntity, SelectEntity):
     """Mode control select entity."""
 
     _attr_translation_key = "mode_control"
+    _attr_icon = "mdi:hvac"
     _attr_options = list(_MODE_BY_LABEL)
 
     def __init__(
