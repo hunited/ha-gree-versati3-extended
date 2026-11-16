@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.12 - 2026-11-16
+
+- Retry a failed device poll once after five seconds before marking the
+  coordinator update as failed.
+
 ## 0.1.11 - 2026-10-31
 
 - Prevented all five temperature setpoint controls from briefly reverting to a

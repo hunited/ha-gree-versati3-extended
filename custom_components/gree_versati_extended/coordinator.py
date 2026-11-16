@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import timedelta
 from typing import Any
@@ -13,6 +14,7 @@ from .client import GreeVersatiClientError, GreeVersatiProtocolClient
 from .constants import DOMAIN, POLL_KEYS
 
 _LOGGER = logging.getLogger(__name__)
+_RETRY_DELAY_SECONDS = 5
 
 
 class GreeVersatiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
@@ -36,4 +38,19 @@ class GreeVersatiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         try:
             return await self.client.async_get(list(POLL_KEYS))
         except GreeVersatiClientError as err:
-            raise UpdateFailed(str(err)) from err
+            first_error = err
+            _LOGGER.debug(
+                "Data request failed for %s; retrying in %s seconds: %s",
+                DOMAIN,
+                _RETRY_DELAY_SECONDS,
+                first_error,
+            )
+
+        await asyncio.sleep(_RETRY_DELAY_SECONDS)
+        try:
+            return await self.client.async_get(list(POLL_KEYS))
+        except GreeVersatiClientError as retry_error:
+            raise UpdateFailed(
+                f"Request failed before and after the {_RETRY_DELAY_SECONDS}-second retry: "
+                f"{first_error}; {retry_error}"
+            ) from retry_error
