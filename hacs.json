@@ -1,8 +1,5 @@
 {
   "name": "Gree Versati 3 Extended",
-  "domains": [
-    "gree_versati_extended"
-  ],
   "render_readme": true,
   "homeassistant": "2024.8.0"
 }
