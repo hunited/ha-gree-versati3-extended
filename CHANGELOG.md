@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.13 - 2026-11-16
+
+- Prepared the integration for the Home Assistant Marketplace with a heat-pump
+  category, Marketplace installation guidance, and HACS validation.
+
 ## 0.1.12 - 2026-11-16
 
 - Retry a failed device poll once after five seconds before marking the
