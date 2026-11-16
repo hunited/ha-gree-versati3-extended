@@ -1,4 +1,7 @@
 # Gree Versati 3 Local Extended
+
+[![Open in Home Assistant Marketplace](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=hunited&repository=ha-gree-versati3-extended&category=integration)
+
 Based on https://github.com/sarunasr/ha-gree-versati3 and extended. Use it like they do:
 
 Custom Home Assistant integration for local LAN control of a Gree Versati 3 heat pump over the device UDP JSON protocol.
@@ -143,7 +146,14 @@ keys:
   - Quiet
 ```
 
-## Install via HACS (Custom Repository)
+<!-- ha-marketplace:exclude-start -->
+## Install via Home Assistant Marketplace
+
+On Home Assistant 2026.11 or newer, open the repository in the Marketplace using
+the badge at the top of this page. If it is not in the default catalog yet, add
+it as a custom integration repository.
+
+On Home Assistant 2026.10 or older, add this repository in HACS:
 
 1. Open HACS in Home Assistant.
 2. Go to `Integrations`.
@@ -152,6 +162,7 @@ keys:
 5. Install `Gree Versati 3 Extended` from HACS.
 6. Restart Home Assistant.
 7. Add integration: `Settings` -> `Devices & Services` -> `Add Integration` -> `Gree Versati 3 Local Extended`.
+<!-- ha-marketplace:exclude-end -->
 
 ## Configuration Fields
 
@@ -162,7 +173,7 @@ keys:
 - `timeout`: UDP timeout in seconds (default `5`)
 
 Options flow:
-- `scan_interval`: Polling interval in seconds (default `30`)
+- `scan_interval`: Polling interval in seconds (default `300`)
 
 ## Notes
 

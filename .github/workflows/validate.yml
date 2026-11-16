@@ -11,6 +11,17 @@ permissions:
   contents: read
 
 jobs:
+  hacs:
+    name: Marketplace validation
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Validate repository for HACS and Marketplace
+        uses: hacs/action@main
+        with:
+          category: integration
+          comment: false
+
   hassfest:
     name: Home Assistant validation
     runs-on: ubuntu-latest
