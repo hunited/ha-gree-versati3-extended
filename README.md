@@ -149,19 +149,23 @@ keys:
 <!-- ha-marketplace:exclude-start -->
 ## Install via Home Assistant Marketplace
 
-On Home Assistant 2026.11 or newer, open the repository in the Marketplace using
-the badge at the top of this page. If it is not in the default catalog yet, add
-it as a custom integration repository.
+On Home Assistant 2026.11 or newer, open the Marketplace using the badge at the
+top of this page, or search for **Gree Versati 3 Extended** in the Marketplace
+and install it.
 
-On Home Assistant 2026.10 or older, add this repository in HACS:
+On older Home Assistant versions, open HACS, go to **Integrations**, and search
+for **Gree Versati 3 Extended**.
+
+If the integration is not listed, add this repository as a custom repository:
 
 1. Open HACS in Home Assistant.
 2. Go to `Integrations`.
 3. Open the menu (`⋮`) and choose `Custom repositories`.
-4. Add this repository URL and category `Integration`.
+4. Add `https://github.com/hunited/ha-gree-versati3-extended` and category `Integration`.
 5. Install `Gree Versati 3 Extended` from HACS.
-6. Restart Home Assistant.
-7. Add integration: `Settings` -> `Devices & Services` -> `Add Integration` -> `Gree Versati 3 Local Extended`.
+
+After installation, restart Home Assistant and add the integration under
+`Settings` -> `Devices & Services` -> `Add Integration` -> `Gree Versati 3 Local Extended`.
 <!-- ha-marketplace:exclude-end -->
 
 ## Configuration Fields
